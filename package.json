@@ -28,7 +28,7 @@
     "lint": "eslint 'src/**/*.ts'",
     "format": "eslint 'src/**/*.ts' --fix",
     "clean": "rm -rf lib",
-    "prepare": "yarn lint && yarn build"
+    "prepare": "yarn clean && yarn lint && yarn build"
   },
   "dependencies": {
     "graphql": "^14.5.8",
