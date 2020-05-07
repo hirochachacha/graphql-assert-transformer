@@ -74,7 +74,7 @@ export class AssertTransformer extends Transformer {
     const cond = this.quote(condition)
     const val = `$ctx.args.input.${fieldName}`
     const cls = `${val}.getClass()`
-    const cond1 = condition.replace(/\B\.\B/g, val).replace(/\B\./g, `${val}.`)
+    const cond1 = condition.replace(/\B\.\B/g, val).replace(/(?=^|[^)\]}]\B)\./g, `${val}.`)
     const msg = this.quote(message || 'Input assertion error')
     const typ = this.quote(type || 'AssertionError')
     return iff(

@@ -38,7 +38,7 @@ Append `@assert` to target fields.
 ```
 type Post @model {
   id: ID!
-  title: String @assert(condition: """.length() > 3 && .matches("t.*")""")
+  title: String @assert(condition: ".length() > 3 && .matches(\"[a-zA-Z0-9]+\")")
   text: String @assert(condition: ".length() > 10")
   episode: Int @assert(condition: ". % 2 == 0")
 }
