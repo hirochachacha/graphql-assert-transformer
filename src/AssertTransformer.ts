@@ -9,6 +9,10 @@ import {
 import {ResolverResourceIDs} from 'graphql-transformer-common'
 import {printBlock, iff, not, raw, parens, Expression, and, ref} from 'graphql-mapping-template'
 
+export const normalizeCondition = (s: string, val: string) => {
+  return s.replace(/\B\.\B/g, val).replace(/(?<=^|[^)\]}]\B)\./g, `${val}.`)
+}
+
 export class AssertTransformer extends Transformer {
   constructor() {
     super(
@@ -56,7 +60,7 @@ export class AssertTransformer extends Transformer {
     const directive = type!.directives!.find((d) => d.name.value === 'model')
 
     if (!directive) {
-      throw new Error(`@assert directive can only be used on types with @model directive.`)
+      throw new InvalidDirectiveError(`@assert directive can only be used on types with @model directive.`)
     }
   }
 
@@ -74,7 +78,7 @@ export class AssertTransformer extends Transformer {
     const cond = this.quote(condition)
     const val = `$ctx.args.input.${fieldName}`
     const cls = `${val}.getClass()`
-    const cond1 = condition.replace(/\B\.\B/g, val).replace(/(?=^|[^)\]}]\B)\./g, `${val}.`)
+    const cond1 = normalizeCondition(condition, val)
     const msg = this.quote(message || 'Input assertion error')
     const typ = this.quote(type || 'AssertionError')
     return iff(

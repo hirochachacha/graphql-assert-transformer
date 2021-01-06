@@ -1,5 +1,5 @@
 import {GraphQLTransform} from 'graphql-transformer-core'
-import {AssertTransformer} from '../AssertTransformer'
+import {AssertTransformer, normalizeCondition} from '../AssertTransformer'
 import {DynamoDBModelTransformer} from 'graphql-dynamodb-transformer'
 
 test('@assert fails without @model.', () => {
@@ -18,4 +18,12 @@ test('@assert fails without @model.', () => {
   } catch (e) {
     expect(e.name).toEqual('InvalidDirectiveError')
   }
+})
+
+test('normalizeCondition', () => {
+  expect(normalizeCondition('.length() > 3 && .matches("[a-zA-Z0-9]+")', 'self')).toEqual(
+    'self.length() > 3 && self.matches("[a-zA-Z0-9]+")'
+  )
+  expect(normalizeCondition('.length() > 10', 'self')).toEqual('self.length() > 10')
+  expect(normalizeCondition('. % 2 == 0', 'self')).toEqual('self % 2 == 0')
 })
